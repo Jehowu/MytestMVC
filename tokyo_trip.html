@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>東京5日行程 8/6–8/10</title>
+  <style>
+    :root {
+      --red: #c0392b;
+      --red-light: #e74c3c;
+      --blue: #2980b9;
+      --blue-light: #3498db;
+      --green: #27ae60;
+      --green-light: #2ecc71;
+      --orange: #e67e22;
+      --orange-light: #f39c12;
+      --purple: #8e44ad;
+      --gray: #ecf0f1;
+      --dark: #2c3e50;
+      --text: #34495e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Noto Sans TC', sans-serif;
+      background: #f8f9fa;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .hero {
+      background: linear-gradient(135deg, #c0392b 0%, #8e44ad 50%, #2980b9 100%);
+      color: white;
+      padding: 40px 20px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '⛩ 🗼 🌸 🎌 🗾';
+      font-size: 2rem;
+      position: absolute;
+      top: 10px;
+      left: 0; right: 0;
+      opacity: 0.15;
+      letter-spacing: 20px;
+      animation: drift 20s linear infinite;
+    }
+    @keyframes drift {
+      from { transform: translateX(-100px); }
+      to   { transform: translateX(100px); }
+    }
+    .hero h1 {
+      font-size: clamp(1.6rem, 5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .hero p {
+      margin-top: 8px;
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    .hero-badges {
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+
+    /* ── TABS ── */
+    .tabs-wrapper {
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .tabs {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex: 0 0 auto;
+      padding: 16px 24px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #95a5a6;
+      transition: all 0.2s;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .tab:hover { color: var(--dark); background: #f8f9fa; }
+    .tab.active {
+      color: var(--red);
+      border-bottom-color: var(--red);
+    }
+    .tab .tab-date { font-size: 0.75rem; font-weight: 400; opacity: 0.7; display: block; }
+
+    /* ── CONTENT ── */
+    .content { max-width: 900px; margin: 0 auto; padding: 30px 16px 60px; }
+
+    .day-panel { display: none; animation: fadeIn 0.35s ease; }
+    .day-panel.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .day-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .day-num {
+      width: 52px; height: 52px;
+      background: var(--red);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(192,57,43,0.35);
+    }
+    .day-num span { font-size: 0.6rem; font-weight: 400; }
+    .day-title { font-size: 1.3rem; font-weight: 700; color: var(--dark); }
+    .day-sub { font-size: 0.85rem; color: #7f8c8d; margin-top: 2px; }
+
+    /* ── TIMELINE ── */
+    .timeline { position: relative; padding-left: 36px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--red), #e0e0e0);
+    }
+
+    .tl-item {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .tl-dot {
+      position: absolute;
+      left: -30px;
+      top: 12px;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 0 0 2px currentColor;
+      z-index: 1;
+    }
+    .tl-item.transport .tl-dot { color: var(--blue); background: var(--blue); }
+    .tl-item.food .tl-dot      { color: var(--orange); background: var(--orange); }
+    .tl-item.sight .tl-dot     { color: var(--green); background: var(--green); }
+    .tl-item.hotel .tl-dot     { color: var(--purple); background: var(--purple); }
+    .tl-item.flight .tl-dot    { color: var(--red); background: var(--red); }
+    .tl-item.tip .tl-dot       { color: #f39c12; background: #f39c12; }
+
+    .card {
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: default;
+      background: white;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+
+    /* type colors */
+    .tl-item.transport .card { border-left: 4px solid var(--blue); }
+    .tl-item.food .card      { border-left: 4px solid var(--orange); }
+    .tl-item.sight .card     { border-left: 4px solid var(--green); }
+    .tl-item.hotel .card     { border-left: 4px solid var(--purple); }
+    .tl-item.flight .card    { border-left: 4px solid var(--red); }
+    .tl-item.tip .card       { border-left: 4px solid #f39c12; background: #fffbf0; }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .card-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+    .card-title { font-weight: 700; font-size: 1rem; color: var(--dark); flex: 1; }
+    .card-time {
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: var(--gray);
+      padding: 2px 10px;
+      border-radius: 10px;
+      white-space: nowrap;
+      align-self: flex-start;
+    }
+    .card-sub { font-size: 0.85rem; color: #7f8c8d; margin-top: 4px; }
+    .card-body { margin-top: 10px; }
+
+    /* transport card */
+    .transport-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .station {
+      font-weight: 700;
+      font-size: 0.9rem;
+      background: var(--blue);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 8px;
+    }
+    .arrow { color: #bdc3c7; font-size: 1.2rem; }
+    .transport-meta {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .meta-chip {
+      font-size: 0.78rem;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    .chip-line { background: #d6eaf8; color: var(--blue); }
+    .chip-time { background: #d5f5e3; color: var(--green); }
+    .chip-cost { background: #fdebd0; color: var(--orange); }
+
+    /* food card */
+    .restaurant-name { font-size: 1rem; font-weight: 700; color: var(--dark); }
+    .restaurant-meta {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .stars { color: #f1c40f; font-size: 0.9rem; }
+    .rating { font-weight: 700; font-size: 0.85rem; color: var(--dark); }
+    .price { font-size: 0.78rem; background: #eafaf1; color: var(--green); padding: 2px 8px; border-radius: 8px; font-weight: 600; }
+    .cuisine { font-size: 0.78rem; background: #fdf2f8; color: var(--purple); padding: 2px 8px; border-radius: 8px; font-weight: 600; }
+    .note { font-size: 0.82rem; color: #7f8c8d; margin-top: 8px; font-style: italic; }
+
+    /* sight card */
+    .sight-desc { font-size: 0.85rem; color: #555; margin-top: 6px; line-height: 1.6; }
+    .sight-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .sight-tag {
+      font-size: 0.75rem;
+      background: #e8f8f5;
+      color: var(--green);
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    /* tip card */
+    .tip-text { font-size: 0.88rem; color: #7f6000; line-height: 1.6; margin-top: 4px; }
+
+    /* flight card */
+    .flight-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+    .flight-airport { font-size: 1.1rem; font-weight: 800; color: var(--dark); }
+    .flight-time { font-size: 0.8rem; color: #7f8c8d; }
+    .flight-arrow { font-size: 1.5rem; color: var(--red); }
+
+    /* ── SUMMARY BAR ── */
+    .summary-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: white;
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .summary-item { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; }
+    .summary-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      color: #aaa;
+      font-size: 0.8rem;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>🎌 東京・千葉 5日行程</h1>
+  <p>2026年 8月6日（三）～ 8月10日（日）</p>
+  <div class="hero-badges">
+    <span class="badge">🏨 海浜幕張 × 上野 APA Hotel</span>
+    <span class="badge">✈️ 成田空港 出發</span>
+    <span class="badge">🌡 注意暑熱 ≈ 35°C</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrapper">
+  <div class="tabs" id="tabs">
+    <div class="tab active" onclick="switchDay(0)">Day 1<span class="tab-date">8/6 三</span></div>
+    <div class="tab" onclick="switchDay(1)">Day 2<span class="tab-date">8/7 四</span></div>
+    <div class="tab" onclick="switchDay(2)">Day 3<span class="tab-date">8/8 五</span></div>
+    <div class="tab" onclick="switchDay(3)">Day 4<span class="tab-date">8/9 六</span></div>
+    <div class="tab" onclick="switchDay(4)">Day 5<span class="tab-date">8/10 日</span></div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ══════════ DAY 1 ══════════ -->
+  <div class="day-panel active" id="day0">
+    <div class="day-header">
+      <div class="day-num">Day<span>1</span></div>
+      <div>
+        <div class="day-title">🌊 海浜幕張</div>
+        <div class="day-sub">8月6日（三）・千葉県 幕張新都心</div>
+      </div>
+    </div>
+    <div class="summary-bar">
+      <div class="summary-item"><div class="summary-dot" style="background:var(--blue)"></div>交通</div>
+      <div class="summary-item"><div class="summary-dot" style="background:var(--green)"></div>觀光</div>
+      <div class="summary-item"><div class="summary-dot" style="background:var(--orange)"></div>餐飲</div>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item transport">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🚃</div>
+            <div class="card-title">抵達 海浜幕張駅</div>
+            <div class="card-time">上午</div>
+          </div>
+          <div class="card-body">
+            <div class="transport-meta">
+              <span class="meta-chip chip-line">JR京葉線</span>
+              <span class="meta-chip chip-time">海浜幕張駅 下車</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item hotel">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🏨</div>
+            <div class="card-title">ホテルスプリングス幕張 Check-in</div>
+            <div class="card-time">下午</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">幕張メッセ隣接的知名飯店，地點極佳。放下行李後即可步行至周邊景點。</div>
+            <div class="sight-tags"><span class="sight-tag">步行至幕張メッセ 約 5 分</span><span class="sight-tag">步行至 AEON Mall 約 10 分</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item sight">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🏟</div>
+            <div class="card-title">幕張メッセ 周邊</div>
+            <div class="card-time">上午</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">日本最大展覽場之一，可確認是否有活動或展覽。即使無活動也可在周邊散步感受氛圍。</div>
+            <div class="sight-tags"><span class="sight-tag">免費</span><span class="sight-tag">戶外</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item sight">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🏬</div>
+            <div class="card-title">AEON Mall 幕張新都心</div>
+            <div class="card-time">下午</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">超大型室內商場，酷熱天氣首選避暑點。購物、餐廳、電影院一應俱全。</div>
+            <div class="sight-tags"><span class="sight-tag">室內 ❄️</span><span class="sight-tag">免費入場</span><span class="sight-tag">步行10分</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item food">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🍽</div>
+            <div class="card-title">晚餐：周邊就地探索</div>
+            <div class="card-time">晚上</div>
+          </div>
+          <div class="card-body">
+            <div class="note">您的收藏清單暫無此區餐廳，可選擇 AEON Mall 餐廳街或幕張駅附近居酒屋。</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ DAY 2 ══════════ -->
+  <div class="day-panel" id="day1">
+    <div class="day-header">
+      <div class="day-num">Day<span>2</span></div>
+      <div>
+        <div class="day-title">🚃 海浜幕張 → 上野 Check-in</div>
+        <div class="day-sub">8月7日（四）・移動日</div>
+      </div>
+    </div>
+    <div class="summary-bar">
+      <div class="summary-item"><div class="summary-dot" style="background:var(--blue)"></div>移動</div>
+      <div class="summary-item"><div class="summary-dot" style="background:var(--purple)"></div>Check-in</div>
+      <div class="summary-item"><div class="summary-dot" style="background:var(--orange)"></div>晚餐</div>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item transport">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🚃</div>
+            <div class="card-title">移動：海浜幕張 → 上野</div>
+            <div class="card-time">上午</div>
+          </div>
+          <div class="card-body">
+            <div class="transport-row">
+              <span class="station">海浜幕張</span>
+              <span class="arrow">→</span>
+              <span class="station">東京</span>
+              <span class="arrow">→</span>
+              <span class="station">上野</span>
+            </div>
+            <div class="transport-meta">
+              <span class="meta-chip chip-line">JR 京葉線</span>
+              <span class="meta-chip chip-time">東京駅 換乘 JR 京浜東北線</span>
+              <span class="meta-chip chip-time">合計約 45 分</span>
+              <span class="meta-chip chip-cost">¥660</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item hotel">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🏨</div>
+            <div class="card-title">APA Hotel 上野駅前 Check-in</div>
+            <div class="card-time">下午</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">放下行李，換上輕便服裝。稍作休息後出發探索周邊。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item sight">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🛒</div>
+            <div class="card-title">アメヤ横丁（阿美橫丁）散步</div>
+            <div class="card-time">傍晚</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">飯店旁的熱鬧商店街，海鮮、乾貨、服飾、零食應有盡有。感受東京庶民氣息。</div>
+            <div class="sight-tags"><span class="sight-tag">步行即達</span><span class="sight-tag">免費</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item transport">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🚇</div>
+            <div class="card-title">前往晚餐地點</div>
+            <div class="card-time">18:30</div>
+          </div>
+          <div class="card-body">
+            <div class="transport-row">
+              <span class="station">上野</span>
+              <span class="arrow">→</span>
+              <span class="station">浅草橋</span>
+            </div>
+            <div class="transport-meta">
+              <span class="meta-chip chip-line">都営浅草線</span>
+              <span class="meta-chip chip-time">約 8 分</span>
+              <span class="meta-chip chip-cost">¥180</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item food">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🥩</div>
+            <div class="card-title">晚餐：牛舌日 淺草橋分店</div>
+            <div class="card-time">19:00</div>
+          </div>
+          <div class="card-body">
+            <div class="restaurant-meta">
+              <span class="stars">★★★★★</span>
+              <span class="rating">4.9</span>
+              <span class="price">¥3,000–8,000</span>
+              <span class="cuisine">牛舌専門</span>
+            </div>
+            <div class="note">評分極高的牛舌専門店，抵達日本第一頓正式晚餐的絕佳選擇。建議提前訂位。</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ DAY 3 ══════════ -->
+  <div class="day-panel" id="day2">
+    <div class="day-header">
+      <div class="day-num">Day<span>3</span></div>
+      <div>
+        <div class="day-title">🎮 秋葉原 → 淺草</div>
+        <div class="day-sub">8月8日（五）・電玩週邊掃貨 + 極品壽喜燒</div>
+      </div>
+    </div>
+    <div class="summary-bar">
+      <div class="summary-item"><div class="summary-dot" style="background:var(--blue)"></div>交通</div>
+      <div class="summary-item"><div class="summary-dot" style="background:var(--green)"></div>觀光</div>
+      <div class="summary-item"><div class="summary-dot" style="background:var(--orange)"></div>餐飲</div>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item transport">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🚃</div>
+            <div class="card-title">上野 → 秋葉原</div>
+            <div class="card-time">09:30</div>
+          </div>
+          <div class="card-body">
+            <div class="transport-row">
+              <span class="station">上野</span>
+              <span class="arrow">→</span>
+              <span class="station">秋葉原</span>
+            </div>
+            <div class="transport-meta">
+              <span class="meta-chip chip-line">JR 山手線 / 京浜東北線</span>
+              <span class="meta-chip chip-time">1站・約 4 分</span>
+              <span class="meta-chip chip-cost">¥160</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item sight">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🎮</div>
+            <div class="card-title">秋葉原 電玩・動漫周邊掃貨</div>
+            <div class="card-time">10:00–16:00</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">全球最密集的電玩動漫聖地，盡情採購！</div>
+            <div class="sight-tags">
+              <span class="sight-tag">ヨドバシカメラ Akiba</span>
+              <span class="sight-tag">Animate</span>
+              <span class="sight-tag">Gamers</span>
+              <span class="sight-tag">Kotobukiya</span>
+              <span class="sight-tag">Radio Kaikan</span>
+              <span class="sight-tag">Sofmap</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item food">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🍜</div>
+            <div class="card-title">午餐：秋葉原周邊自選</div>
+            <div class="card-time">12:30</div>
+          </div>
+          <div class="card-body">
+            <div class="note">秋葉原站周邊有大量拉麵、牛丼、定食選擇，可邊逛邊找喜歡的。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item transport">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🚶</div>
+            <div class="card-title">秋葉原 → 淺草（步行 or 地鐵）</div>
+            <div class="card-time">16:30</div>
+          </div>
+          <div class="card-body">
+            <div class="transport-row">
+              <span class="station">秋葉原</span>
+              <span class="arrow">→</span>
+              <span class="station">浅草</span>
+            </div>
+            <div class="transport-meta">
+              <span class="meta-chip chip-line">步行 約 20 分</span>
+              <span class="meta-chip chip-line">或 つくばEX 約 4 分</span>
+              <span class="meta-chip chip-cost">步行免費 / 電車 ¥200</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item sight">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">⛩</div>
+            <div class="card-title">淺草寺・仲見世通 散步</div>
+            <div class="card-time">17:00</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">傍晚的淺草寺燈光開始亮起，人潮比白天少，拍照絕佳時機。仲見世通可順手採購小伴手禮。</div>
+            <div class="sight-tags"><span class="sight-tag">免費</span><span class="sight-tag">拍照勝地</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item food">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🥩</div>
+            <div class="card-title">晚餐：WAGYU SUKIYAKI 極〜GOKU〜 淺草</div>
+            <div class="card-time">19:00</div>
+          </div>
+          <div class="card-body">
+            <div class="restaurant-meta">
+              <span class="stars">★★★★★</span>
+              <span class="rating">5.0 ⭐ 全清單最高</span>
+              <span class="price">¥5,000–6,000</span>
+              <span class="cuisine">和牛壽喜燒</span>
+            </div>
+            <div class="note">評分滿分 5.0！超過 5,000 則評論。淺草本堂旁，頂級和牛壽喜燒體驗。強烈建議提前網路訂位。</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ DAY 4 ══════════ -->
+  <div class="day-panel" id="day3">
+    <div class="day-header">
+      <div class="day-num">Day<span>4</span></div>
+      <div>
+        <div class="day-title">🌸 澀谷 → 新宿</div>
+        <div class="day-sub">8月9日（六）・週六繁華商圈</div>
+      </div>
+    </div>
+    <div class="summary-bar">
+      <div class="summary-item"><div class="summary-dot" style="background:var(--blue)"></div>交通</div>
+      <div class="summary-item"><div class="summary-dot" style="background:var(--green)"></div>觀光</div>
+      <div class="summary-item"><div class="summary-dot" style="background:var(--orange)"></div>餐飲</div>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item tip">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">💡</div>
+            <div class="card-title">行李提醒：今晚請委託飯店宅配行李</div>
+          </div>
+          <div class="card-body">
+            <div class="tip-text">
+              今晚在 APA Hotel 櫃台請服務員安排隔日宅配（ヤマト宅急便），<br>
+              將行李從飯店送至 <strong>成田空港 T1 或 T2</strong>，費用約 <strong>¥2,000–3,000／件</strong>。<br>
+              明天 Day 5 即可輕裝暢遊成田！
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item transport">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🚇</div>
+            <div class="card-title">上野 → 澀谷</div>
+            <div class="card-time">10:30</div>
+          </div>
+          <div class="card-body">
+            <div class="transport-row">
+              <span class="station">上野</span>
+              <span class="arrow">→</span>
+              <span class="station">渋谷</span>
+            </div>
+            <div class="transport-meta">
+              <span class="meta-chip chip-line">東京メトロ 銀座線（直通）</span>
+              <span class="meta-chip chip-time">約 28 分</span>
+              <span class="meta-chip chip-cost">¥230</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item food">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🦐</div>
+            <div class="card-title">午餐：Ebimaru Ramen</div>
+            <div class="card-time">12:00</div>
+          </div>
+          <div class="card-body">
+            <div class="restaurant-meta">
+              <span class="stars">★★★★☆</span>
+              <span class="rating">4.5</span>
+              <span class="price">¥1,000–2,000</span>
+              <span class="cuisine">蝦味拉麵</span>
+            </div>
+            <div class="note">澀谷區人氣拉麵店，獨特蝦味湯底，評分極佳。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item sight">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🔀</div>
+            <div class="card-title">澀谷 Scramble Square 展望台 & 交叉口</div>
+            <div class="card-time">13:30</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">登上澀谷天空展望台（SHIBUYA SKY）俯瞰全東京，再下來拍攝著名的澀谷十字路口。</div>
+            <div class="sight-tags"><span class="sight-tag">展望台 ¥2,200</span><span class="sight-tag">室內 ❄️</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item sight">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🌳</div>
+            <div class="card-title">明治神宮 森林步道</div>
+            <div class="card-time">14:30</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">從原宿步行即達。廣大的神宮森林比外面涼快 2–3°C，夏日避暑兼靈氣加持的絕佳選擇。</div>
+            <div class="sight-tags"><span class="sight-tag">免費</span><span class="sight-tag">天然冷氣 🌿</span><span class="sight-tag">步行 10 分</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item transport">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🚇</div>
+            <div class="card-title">澀谷 → 新宿</div>
+            <div class="card-time">17:30</div>
+          </div>
+          <div class="card-body">
+            <div class="transport-row">
+              <span class="station">渋谷</span>
+              <span class="arrow">→</span>
+              <span class="station">新宿</span>
+            </div>
+            <div class="transport-meta">
+              <span class="meta-chip chip-line">JR 山手線</span>
+              <span class="meta-chip chip-time">約 8 分</span>
+              <span class="meta-chip chip-cost">¥170</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item sight">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🏙</div>
+            <div class="card-title">新宿 夜景 & 歌舞伎町</div>
+            <div class="card-time">18:00</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">東洋不夜城，週六夜晚最熱鬧。感受霓虹燈海，逛 Omoide Yokocho（思い出横丁）等特色小巷。</div>
+            <div class="sight-tags"><span class="sight-tag">夜間</span><span class="sight-tag">免費</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item food">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🍲</div>
+            <div class="card-title">晚餐 A：MOMO PARADISE 新宿東口</div>
+            <div class="card-time">19:30</div>
+          </div>
+          <div class="card-body">
+            <div class="restaurant-meta">
+              <span class="stars">★★★★★</span>
+              <span class="rating">4.9</span>
+              <span class="price">¥4,000–9,000</span>
+              <span class="cuisine">涮涮鍋 吃到飽</span>
+            </div>
+            <div class="note">超過 10,000 則評論，新宿東口超人氣涮涮鍋，肉質優秀。強烈推薦！</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item food">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🔥</div>
+            <div class="card-title">晚餐 B（二選一）：牛吉 新宿東口</div>
+            <div class="card-time">19:30</div>
+          </div>
+          <div class="card-body">
+            <div class="restaurant-meta">
+              <span class="stars">★★★★★</span>
+              <span class="rating">4.7</span>
+              <span class="price">¥3,000–6,000</span>
+              <span class="cuisine">日式燒肉</span>
+            </div>
+            <div class="note">同在新宿東口，燒肉路線的替代選擇，評分同樣優秀。</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ DAY 5 ══════════ -->
+  <div class="day-panel" id="day4">
+    <div class="day-header">
+      <div class="day-num">Day<span>5</span></div>
+      <div>
+        <div class="day-title">✈️ 成田観光 → 機場 出發</div>
+        <div class="day-sub">8月10日（日）・航班 20:40 起飛</div>
+      </div>
+    </div>
+    <div class="summary-bar">
+      <div class="summary-item"><div class="summary-dot" style="background:var(--blue)"></div>交通</div>
+      <div class="summary-item"><div class="summary-dot" style="background:var(--green)"></div>觀光</div>
+      <div class="summary-item"><div class="summary-dot" style="background:var(--orange)"></div>餐飲</div>
+      <div class="summary-item"><div class="summary-dot" style="background:var(--red)"></div>登機</div>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item hotel">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🏨</div>
+            <div class="card-title">退房 APA Hotel・行李已宅配至機場</div>
+            <div class="card-time">08:00</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">攜帶隨身手提行李即可出發，大件行李昨日已宅配至成田機場。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item transport">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🚃</div>
+            <div class="card-title">京成上野 → 京成成田</div>
+            <div class="card-time">08:30</div>
+          </div>
+          <div class="card-body">
+            <div class="transport-row">
+              <span class="station">京成上野</span>
+              <span class="arrow">→</span>
+              <span class="station">京成成田</span>
+            </div>
+            <div class="transport-meta">
+              <span class="meta-chip chip-line">京成本線 特急</span>
+              <span class="meta-chip chip-time">約 65 分</span>
+              <span class="meta-chip chip-cost">¥840</span>
+            </div>
+            <div class="note" style="margin-top:8px">💡 京成上野駅就在 APA Hotel 步行 5 分鐘，非常方便！</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item sight">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🌿</div>
+            <div class="card-title">栗山公園 散步</div>
+            <div class="card-time">10:00–11:00</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">成田市立公園，玫瑰園與自然步道。離京成成田駅步行約 15 分鐘，清晨人少景色宜人。</div>
+            <div class="sight-tags"><span class="sight-tag">免費</span><span class="sight-tag">自然</span><span class="sight-tag">步行 15 分</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item sight">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">⛩</div>
+            <div class="card-title">成田山新勝寺 參拜</div>
+            <div class="card-time">11:00–12:00</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">日本著名古刹，廣大的寺院境內莊嚴壯觀。沿途的成田参道有眾多特色店鋪可逛。</div>
+            <div class="sight-tags"><span class="sight-tag">免費參拜</span><span class="sight-tag">世界遺產候補</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item food">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🐟</div>
+            <div class="card-title">午餐：成田参道 鰻魚飯（告別飯）</div>
+            <div class="card-time">12:30</div>
+          </div>
+          <div class="card-body">
+            <div class="restaurant-meta">
+              <span class="cuisine">成田名物 うなぎ</span>
+            </div>
+            <div class="note">成田是日本著名的鰻魚飯產地，参道沿路有川豊、駿河屋等老舗。用一頓鰻魚飯為旅程畫上完美句點！</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item sight">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🛍</div>
+            <div class="card-title">成田仲見世通 最後採購</div>
+            <div class="card-time">13:30–16:30</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">最後機會採購漬物、和菓子、傳統工藝品等伴手禮。咖啡廳休息、吹冷氣，從容準備出發。</div>
+            <div class="sight-tags"><span class="sight-tag">伴手禮</span><span class="sight-tag">室內 ❄️</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item transport">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🚃</div>
+            <div class="card-title">京成成田 → 成田空港</div>
+            <div class="card-time">17:00</div>
+          </div>
+          <div class="card-body">
+            <div class="transport-row">
+              <span class="station">京成成田</span>
+              <span class="arrow">→</span>
+              <span class="station">成田空港</span>
+            </div>
+            <div class="transport-meta">
+              <span class="meta-chip chip-line">京成本線</span>
+              <span class="meta-chip chip-time">約 10 分</span>
+              <span class="meta-chip chip-cost">¥260</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item flight">
+        <div class="tl-dot"></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🛃</div>
+            <div class="card-title">抵達成田機場・辦理登機</div>
+            <div class="card-time">17:10</div>
+          </div>
+          <div class="card-body">
+            <div class="sight-desc">領取宅配行李 → 辦理 Check-in → 安全檢查 → 出入境審查。國際線建議提前 <strong>3 小時</strong>到達。</div>
+            <div class="sight-tags"><span class="sight-tag">領取宅配行李</span><span class="sight-tag">Check-in</span><span class="sight-tag">出境審查</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item flight">
+        <div class="tl-dot"></div>
+        <div class="card" style="background: linear-gradient(135deg, #c0392b, #e74c3c); color: white;">
+          <div class="card-header">
+            <div class="card-icon">✈️</div>
+            <div class="card-title" style="color:white">起飛！再見，東京！</div>
+            <div class="card-time" style="background:rgba(255,255,255,0.25); color:white">20:40</div>
+          </div>
+          <div class="card-body">
+            <div class="flight-row">
+              <div>
+                <div class="flight-airport">NRT</div>
+                <div class="flight-time" style="color:rgba(255,255,255,0.8)">成田國際機場</div>
+              </div>
+              <div class="flight-arrow">✈️ ──────→</div>
+              <div>
+                <div class="flight-airport">回家</div>
+                <div class="flight-time" style="color:rgba(255,255,255,0.8)">旅程圓滿結束</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<div class="footer">🎌 東京5日行程 2026.08.06–08.10 ・ 祝旅途愉快！</div>
+
+<script>
+  function switchDay(index) {
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active', i === index);
+    });
+    document.querySelectorAll('.day-panel').forEach((p, i) => {
+      p.classList.toggle('active', i === index);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
